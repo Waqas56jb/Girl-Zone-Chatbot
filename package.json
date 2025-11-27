@@ -1,0 +1,29 @@
+{
+  "name": "girl-zone-chatbot",
+  "version": "1.0.0",
+  "description": "Serverless Node.js backend for the Girl Zone chatbot",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Waqas56jb/Girl-Zone-Chatbot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/Waqas56jb/Girl-Zone-Chatbot/issues"
+  },
+  "homepage": "https://github.com/Waqas56jb/Girl-Zone-Chatbot#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "openai": "^6.9.1"
+  }
+}
