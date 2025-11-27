@@ -1,4 +1,5 @@
 // Vercel serverless function - imports handler from server.js
+import 'dotenv/config';
 import { handleChat } from '../server.js';
 
 export default async function handler(req, res) {

@@ -2,14 +2,19 @@ import 'dotenv/config';
 import http from 'http';
 import OpenAI from 'openai';
 
-// Load environment variables
-const openaiApiKey = process.env.OPENAI_API_KEY;
+// Lazy initialization - only when handler is called
+let openaiClient = null;
+const getOpenAIClient = () => {
+  if (!openaiClient) {
+    const openaiApiKey = process.env.OPENAI_API_KEY;
+    if (!openaiApiKey) {
+      throw new Error('OPENAI_API_KEY is not set. Add it to your .env file or Vercel environment variables.');
+    }
+    openaiClient = new OpenAI({ apiKey: openaiApiKey });
+  }
+  return openaiClient;
+};
 
-if (!openaiApiKey) {
-  throw new Error('OPENAI_API_KEY is not set. Add it to your .env file.');
-}
-
-const openaiClient = new OpenAI({ apiKey: openaiApiKey });
 const historyLimit = Number(process.env.CHAT_HISTORY_LIMIT ?? '12');
 const port = process.env.PORT || 8000;
 
@@ -120,7 +125,7 @@ export const handleChat = async (req, res) => {
       { role: 'user', content: userMessage }
     ];
 
-    const completion = await openaiClient.chat.completions.create({
+    const completion = await getOpenAIClient().chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages,
       max_tokens: 150,
@@ -201,8 +206,10 @@ const server = http.createServer(async (req, res) => {
   res.end(JSON.stringify({ success: false, error: 'Route not found', path: pathname }));
 });
 
-// Start server
-server.listen(port, () => {
-  console.log(`🚀 Chatbot server running at http://localhost:${port}/chat`);
-});
+// Start server only if not in Vercel (for local development)
+if (!process.env.VERCEL) {
+  server.listen(port, () => {
+    console.log(`🚀 Chatbot server running at http://localhost:${port}/chat`);
+  });
+}
 
